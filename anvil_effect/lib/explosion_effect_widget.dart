@@ -9,10 +9,9 @@ import 'package:flutter/widgets.dart';
 
 class ExplosionWidget extends StatefulWidget {
   final Widget child;
-  final Rect bound;
   final String tag;
 
-  const ExplosionWidget({Key key, this.child, this.bound, this.tag})
+  const ExplosionWidget({Key key, this.child, this.tag})
       : super(key: key);
 
   @override
