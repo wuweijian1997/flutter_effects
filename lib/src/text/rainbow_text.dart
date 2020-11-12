@@ -32,19 +32,11 @@ class _RainbowTextState extends State<RainbowText>
       _animationController.addStatusListener((status) {
         if (widget.loop) {
           if (status == AnimationStatus.completed) {
-            _animationController.value = 0;
-            _animationController.forward();
+            _animationController.forward(from: 0);
           }
         }
       });
     }
-  }
-
-  void calculateTextWidth() {
-    var textPainter = TextPainter(
-        text: TextSpan(text: widget.text, style: TextStyle(fontSize: 20)),
-        textDirection: TextDirection.ltr);
-    textPainter.layout();
   }
 
   @override
