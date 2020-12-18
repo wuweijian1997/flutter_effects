@@ -22,9 +22,10 @@ class _DiffScaleTextState extends State<DiffScaleText>
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
-    _animationController.addStatusListener((status) {});
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 400),
+    );
   }
 
   @override
@@ -32,8 +33,7 @@ class _DiffScaleTextState extends State<DiffScaleText>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.text != widget.text) {
       if (!_animationController.isAnimating) {
-        _animationController.value = 0;
-        _animationController.forward();
+        _animationController.forward(from: 0);
       }
     }
   }
@@ -44,28 +44,32 @@ class _DiffScaleTextState extends State<DiffScaleText>
     super.dispose();
   }
 
+  String get text => widget.text;
+
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = widget.textStyle == null
-        ? TextStyle(
-      fontSize: 20,
-      color: Colors.white,
-    )
-        : widget.textStyle;
+    TextStyle textStyle = widget.textStyle ??
+        TextStyle(
+          fontSize: 20,
+          color: Colors.white,
+        );
     return AnimatedBuilder(
       animation: _animationController,
       builder: (BuildContext context, Widget child) {
         return RepaintBoundary(
-            child: CustomPaint(
-              child: Text(widget.text,
-                  style: textStyle.merge(TextStyle(color: Color(0x00000000))),
-                  maxLines: 1,
-                  textDirection: TextDirection.ltr),
-              foregroundPainter: _DiffText(
-                  text: widget.text,
-                  textStyle: textStyle,
-                  progress: _animationController.value),
-            ));
+          child: CustomPaint(
+            child: Text(
+              text,
+              maxLines: 1,
+              style: textStyle.merge(TextStyle(color: Color(0x00000000))),
+            ),
+            foregroundPainter: _DiffText(
+              text: text,
+              textStyle: textStyle,
+              progress: _animationController.value,
+            ),
+          ),
+        );
       },
     );
   }
@@ -80,16 +84,17 @@ class _DiffText extends CustomPainter {
   List<_TextLayoutInfo> _oldTextLayoutInfo = [];
   Alignment alignment;
 
-  _DiffText({this.text,
+  _DiffText({
+    this.text,
     this.textStyle,
     this.progress = 1,
-    this.alignment = Alignment.center})
-      : assert(text != null),
+    this.alignment = Alignment.center,
+  })  : assert(text != null),
         assert(textStyle != null);
 
   @override
   void paint(Canvas canvas, Size size) {
-    double percent = Math.max(0, Math.min(1, progress));
+    double percent = progress.clamp(0, 1);
     if (_textLayoutInfo.length == 0) {
       calculateLayoutInfo(text, _textLayoutInfo);
     }
@@ -186,16 +191,15 @@ class _DiffText extends CustomPainter {
   }
 
   void calculateLayoutInfo(String text, List<_TextLayoutInfo> list) {
-    list.clear();
-
     TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: textStyle),
-        textDirection: TextDirection.ltr,
-        maxLines: 1);
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+      text: TextSpan(text: text, style: textStyle),
+    );
     textPainter.layout();
     for (int i = 0; i < text.length; i++) {
       var forCaret =
-      textPainter.getOffsetForCaret(TextPosition(offset: i), Rect.zero);
+          textPainter.getOffsetForCaret(TextPosition(offset: i), Rect.zero);
       var offsetX = forCaret.dx;
       if (i > 0 && offsetX == 0) {
         break;

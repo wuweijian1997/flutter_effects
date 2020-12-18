@@ -129,25 +129,35 @@ class _MyHomePageState extends State<MyHomePage> {
                 tag: "Explosion Text",
                 child: Container(
                     alignment: Alignment.center,
-                    child: Image.asset('assets/images/icon_sm_sigin_status_three.png')))),
+                    child: Image.asset(
+                        'assets/images/icon_sm_sigin_status_three.png')))),
             Divider(),
             LineBorderText(
-                child: createItem(Text(
-                  "Border Effect",
-                  style: TextStyle(fontSize: 20),
-                )),
+                child: Container(
+                  child: Text(
+                    "Border Effect",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  height: 100,
+                  alignment: Alignment.center,
+                ),
                 autoAnim: true),
             Divider(),
-            createItem(
-                DiffScaleText(
-                  text: sentences[diffScaleNext % sentences.length],
-                  textStyle: TextStyle(fontSize: 20, color: Colors.blue),
-                ),
-                bgColor: Colors.black, onTap: () {
-              setState(() {
-                diffScaleNext++;
-              });
-            }),
+            GestureDetector(
+                onTap: () {
+                  setState(() {
+                    diffScaleNext++;
+                  });
+                },
+                child: Container(
+                  color: Colors.black,
+                  child: DiffScaleText(
+                    text: sentences[diffScaleNext % sentences.length],
+                    textStyle: TextStyle(fontSize: 20, color: Colors.blue),
+                  ),
+                  height: 100,
+                  alignment: Alignment.center,
+                )),
             Divider(),
             createItem(
                 AnvilEffectWidget(

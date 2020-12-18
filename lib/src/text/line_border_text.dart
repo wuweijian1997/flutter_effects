@@ -72,10 +72,12 @@ class _LineBorderTextState extends State<LineBorderText>
           animation: _animationController,
           builder: (BuildContext context, Widget child) {
             double progress = _animationController.value;
-            return CustomPaint(
-              foregroundPainter: _BorderLinePainter(progress),
-              child: RepaintBoundary(child: widget.child),
-              size: widget.size,
+            return RepaintBoundary(
+              child: CustomPaint(
+                foregroundPainter: _BorderLinePainter(progress),
+                child: widget.child,
+                size: widget.size,
+              ),
             );
           },
         ));
@@ -98,7 +100,6 @@ class _BorderLinePainter extends CustomPainter {
 
     double percent = _progress;
     double percent2 = sqrt(3.38 - (percent - 1.7) * (percent - 1.7)) - 0.7;
-
     double width = size.width;
     double height = size.height;
 
